@@ -1,0 +1,58 @@
+FROM docker.io/openapx/openapx-cx-base-py:latest-ubuntu
+
+
+
+# -- build ARGs
+
+# - default image name
+ARG ARG_OPENAPX_IMAGE_NAME=openapx-devcontainer-cx-base-py
+
+# - image ID
+ARG ARG_OPENAPX_IMAGE_ID=${ARG_OPENAPX_IMAGE_NAME}:0.0.0-local
+
+# - GitHub repository URL for the source code
+ARG ARG_OPENAPX_GITHUB_REPO_URL=
+
+# - GitHub commit URL
+ARG ARG_OPENAPX_GITHUB_COMMIT_URL=
+
+# - GitHub build URL
+ARG ARG_OPENAPX_GITHUB_BUILD_URL=
+
+
+# -- OCI labels
+LABEL org.opencontainers.image.title="${ARG_OPENAPX_IMAGE_NAME}" \
+      org.opencontainers.image.description="Base openapx container image for Python Web apps and APIs" \
+      org.opencontainers.image.version="${ARG_OPENAPX_IMAGE_ID}" \
+      org.opencontainers.image.source="${ARG_OPENAPX_GITHUB_REPO_URL}" \
+      org.opencontainers.image.revision="${ARG_OPENAPX_GITHUB_COMMIT_URL}" \
+      org.opencontainers.image.url="${ARG_OPENAPX_GITHUB_BUILD_URL}" \
+      org.opencontainers.image.licenses="Apache-2.0" \
+      org.opencontainers.image.vendor="openapx open-source project" \
+      org.opencontainers.image.created="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+
+
+
+# note: RUN statemens will be collapsed into a single layer to reduce image size in the future
+
+
+# -- perform update and upgrade whenever possible
+RUN apt-get update --assume-yes && \
+    apt-get upgrade --assume-yes
+
+
+# -- create/update CONTAINER file
+#    note: CONTAINER file exists in the root directory
+RUN /opt/openapx/bin/container.sh 
+
+
+# -- install postgresql
+RUN apt-get install --assume-yes postgresql postgresql-contrib
+
+
+# -- clean up apt cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+
+
+
