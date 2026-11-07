@@ -1,0 +1,54 @@
+FROM docker.io/openapx/openapx-cx-base-py:latest-rockylinux
+
+
+
+# -- build ARGs
+
+# - default image name
+ARG ARG_OPENAPX_IMAGE_NAME=openapx-devcontainer-cx-base-py
+
+# - image ID
+ARG ARG_OPENAPX_IMAGE_ID=${ARG_OPENAPX_IMAGE_NAME}:0.0.0-local
+
+# - GitHub repository URL for the source code
+ARG ARG_OPENAPX_GITHUB_REPO_URL=
+
+# - GitHub commit URL
+ARG ARG_OPENAPX_GITHUB_COMMIT_URL=
+
+# - GitHub build URL
+ARG ARG_OPENAPX_GITHUB_BUILD_URL=
+
+
+# -- OCI labels
+LABEL org.opencontainers.image.title="${ARG_OPENAPX_IMAGE_NAME}" \
+      org.opencontainers.image.description="Base openapx devcontainer image for Python Web apps and APIs" \
+      org.opencontainers.image.version="${ARG_OPENAPX_IMAGE_ID}" \
+      org.opencontainers.image.source="${ARG_OPENAPX_GITHUB_REPO_URL}" \
+      org.opencontainers.image.revision="${ARG_OPENAPX_GITHUB_COMMIT_URL}" \
+      org.opencontainers.image.url="${ARG_OPENAPX_GITHUB_BUILD_URL}" \
+      org.opencontainers.image.licenses="Apache-2.0" \
+      org.opencontainers.image.vendor="openapx open-source project" \
+      org.opencontainers.image.created="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+
+
+
+# note: RUN statemens will be collapsed into a single layer to reduce image size in the future
+
+
+
+# -- create/update container-release file
+#    note: container-release file exists in the directory /opt/openapx
+RUN /opt/openapx/bin/container-release.sh 
+
+
+# -- install postgresql
+RUN dnf install --assumeyes postgresql-server postgresql-contrib
+
+
+# -- clean up dnf cache
+RUN dnf clean all && \
+    rm -rf /var/cache/dnf
+
+
+
