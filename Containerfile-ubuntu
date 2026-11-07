@@ -22,7 +22,7 @@ ARG ARG_OPENAPX_GITHUB_BUILD_URL=
 
 # -- OCI labels
 LABEL org.opencontainers.image.title="${ARG_OPENAPX_IMAGE_NAME}" \
-      org.opencontainers.image.description="Base openapx container image for Python Web apps and APIs" \
+      org.opencontainers.image.description="Base openapx devcontainer image for Python Web apps and APIs" \
       org.opencontainers.image.version="${ARG_OPENAPX_IMAGE_ID}" \
       org.opencontainers.image.source="${ARG_OPENAPX_GITHUB_REPO_URL}" \
       org.opencontainers.image.revision="${ARG_OPENAPX_GITHUB_COMMIT_URL}" \
@@ -41,9 +41,9 @@ RUN apt-get update --assume-yes && \
     apt-get upgrade --assume-yes
 
 
-# -- create/update CONTAINER file
-#    note: CONTAINER file exists in the root directory
-RUN /opt/openapx/bin/container.sh 
+# -- create/update container-release file
+#    note: container-release file exists in the directory /opt/openapx
+RUN /opt/openapx/bin/container-release.sh 
 
 
 # -- install postgresql
